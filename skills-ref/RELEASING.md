@@ -67,10 +67,10 @@ quarantined and run directly. Browser downloads need
 1. In Settings > Actions > General, set Workflow permissions to "Read and
    write" and enable "Allow GitHub Actions to create and approve pull
    requests".
-2. Keep the `bootstrap-sha` in
-   [`release-please-config.json`](../release-please-config.json). It is the
-   last upstream commit before the Go switch, so the first changelog starts
-   with the Go code. Remove it after the first release.
+2. [`release-please-config.json`](../release-please-config.json) has no
+   `bootstrap-sha`, so release-please reads the whole history of `main`. To
+   force a specific version, add a `Release-As: X.Y.Z` footer to a commit
+   that touches `skills-ref/`.
 3. Optional: add a fine-grained token or GitHub App token as a `token` input
    to the release-please step. With the default `GITHUB_TOKEN`, release PRs do
    not trigger the `skills-ref` CI workflow.
