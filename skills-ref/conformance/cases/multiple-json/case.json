@@ -1,0 +1,36 @@
+{
+  "id": "multiple-json",
+  "command": "validate",
+  "args": [
+    "--format",
+    "json",
+    "{skill}/valid",
+    "{skill}/invalid"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stdout_json": {
+      "results": [
+        {
+          "path": "{skill}/valid",
+          "valid": true,
+          "problems": []
+        },
+        {
+          "path": "{skill}/invalid",
+          "valid": false,
+          "problems": [
+            {
+              "code": "name.dir_mismatch",
+              "field": "name",
+              "message": "Directory name 'invalid' must match skill name 'other'"
+            }
+          ]
+        }
+      ]
+    },
+    "problem_codes": [
+      "name.dir_mismatch"
+    ]
+  }
+}

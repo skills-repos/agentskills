@@ -1,0 +1,69 @@
+name: skills-ref install canary
+
+# Exercises the released installer exactly as a user's agent would: download
+# from releases/latest, verify SHA-256 against checksums.txt, run it, then
+# validate the installed skill. Catches a broken latest release within
+# minutes of publishing, and re-checks weekly.
+#
+# Releases are published with GITHUB_TOKEN, and events created by
+# GITHUB_TOKEN do not trigger other workflows, so "release: published" alone
+# never fires here. workflow_run is the exception: it runs after every
+# "skills-ref release" run completes, including the ones that publish. The
+# weekly cron and manual dispatch cover releases published by other means.
+on:
+  release:
+    types: [published]
+  workflow_run:
+    workflows: [skills-ref release]
+    types: [completed]
+  schedule:
+    - cron: '17 8 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: ${{ matrix.os }}
+    if: >-
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success') ||
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'release' &&
+       startsWith(github.event.release.tag_name, 'skills-ref/v'))
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Run released install.sh
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          set -eu
+          base=https://github.com/skills-repos/agentskills/releases/latest/download
+          curl -fsSLO "$base/install.sh"
+          curl -fsSLO "$base/checksums.txt"
+          if command -v sha256sum >/dev/null 2>&1; then sum="sha256sum"; else sum="shasum -a 256"; fi
+          line="$(grep '  install.sh$' checksums.txt)" \
+            || { echo "no checksum for install.sh in checksums.txt" >&2; exit 1; }
+          printf '%s\n' "$line" | $sum -c -
+          sh ./install.sh
+          "$HOME/.local/bin/skills-ref" validate "$HOME/.agents/skills/skills-ref"
+      - name: Run released install.ps1
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $base = 'https://github.com/skills-repos/agentskills/releases/latest/download'
+          Invoke-WebRequest "$base/install.ps1" -OutFile install.ps1
+          Invoke-WebRequest "$base/checksums.txt" -OutFile checksums.txt
+          $line = Select-String -Path checksums.txt -Pattern '  install\.ps1$'
+          if (-not $line) { throw 'no checksum for install.ps1 in checksums.txt' }
+          $want = $line.Line.Split(' ')[0]
+          $got = (Get-FileHash install.ps1 -Algorithm SHA256).Hash.ToLower()
+          if ($got -ne $want) { throw 'checksum mismatch for install.ps1' }
+          ./install.ps1
+          & "$HOME\.local\bin\skills-ref.exe" validate "$HOME\.agents\skills\skills-ref"

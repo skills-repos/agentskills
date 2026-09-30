@@ -1,0 +1,22 @@
+{
+  "id": "options-after-path",
+  "command": "validate",
+  "args": [
+    "{skill}",
+    "--recursive",
+    "--format",
+    "json"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout_json": {
+      "results": [
+        {
+          "path": "{skill}/my-skill",
+          "valid": true,
+          "problems": []
+        }
+      ]
+    }
+  }
+}

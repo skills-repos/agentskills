@@ -1,0 +1,19 @@
+{
+  "id": "read-properties",
+  "command": "read-properties",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout_json": {
+      "name": "my-skill",
+      "description": "A test skill",
+      "license": "MIT",
+      "metadata": {
+        "author": "Example",
+        "version": "1.0"
+      }
+    }
+  }
+}

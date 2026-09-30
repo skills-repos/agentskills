@@ -1,0 +1,14 @@
+{
+  "id": "skip-invalid",
+  "command": "to-prompt",
+  "args": [
+    "--skip-invalid",
+    "{skill}/invalid",
+    "{skill}/valid"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stderr": "warning: {skill}/invalid: Directory name 'invalid' must match skill name 'other'\n",
+    "stdout": "<available_skills>\n<skill>\n<name>\nvalid\n</name>\n<description>\nA test skill\n</description>\n<location>\n{skill}/valid/SKILL.md\n</location>\n</skill>\n</available_skills>\n"
+  }
+}

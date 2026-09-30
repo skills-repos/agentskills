@@ -1,0 +1,30 @@
+{
+  "id": "empty-compatibility",
+  "command": "validate",
+  "args": [
+    "--format",
+    "json",
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stdout_json": {
+      "results": [
+        {
+          "path": "{skill}/my-skill",
+          "valid": false,
+          "problems": [
+            {
+              "code": "compatibility.empty",
+              "field": "compatibility",
+              "message": "Compatibility must be 1-500 characters"
+            }
+          ]
+        }
+      ]
+    },
+    "problem_codes": [
+      "compatibility.empty"
+    ]
+  }
+}

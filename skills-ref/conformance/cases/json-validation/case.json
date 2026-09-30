@@ -1,0 +1,30 @@
+{
+  "id": "json-validation",
+  "command": "validate",
+  "args": [
+    "--format",
+    "json",
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stdout_json": {
+      "results": [
+        {
+          "path": "{skill}/my-skill",
+          "valid": false,
+          "problems": [
+            {
+              "code": "name.dir_mismatch",
+              "field": "name",
+              "message": "Directory name 'my-skill' must match skill name 'wrong-name'"
+            }
+          ]
+        }
+      ]
+    },
+    "problem_codes": [
+      "name.dir_mismatch"
+    ]
+  }
+}

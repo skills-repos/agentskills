@@ -1,0 +1,11 @@
+{
+  "id": "nfkc-fullwidth",
+  "command": "validate",
+  "args": [
+    "{skill}/FOO"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/FOO:\n  - Skill name 'FOO' must be lowercase\n"
+  }
+}

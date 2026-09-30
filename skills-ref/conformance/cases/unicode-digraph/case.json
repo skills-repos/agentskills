@@ -1,0 +1,11 @@
+{
+  "id": "unicode-digraph",
+  "command": "validate",
+  "args": [
+    "{skill}/Dž"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/Dž:\n  - Skill name 'Dž' must be lowercase\n"
+  }
+}

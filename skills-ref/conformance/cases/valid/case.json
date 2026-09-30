@@ -1,0 +1,12 @@
+{
+  "id": "valid",
+  "command": "validate",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/my-skill\n",
+    "stderr": ""
+  }
+}

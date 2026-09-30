@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "skills-ref validate --format json",
+  "type": "object",
+  "required": ["results"],
+  "additionalProperties": false,
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "valid", "problems"],
+        "additionalProperties": false,
+        "properties": {
+          "path": {"type": "string"},
+          "valid": {"type": "boolean"},
+          "problems": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["code", "message"],
+              "additionalProperties": false,
+              "properties": {
+                "code": {"type": "string", "pattern": "^[a-z_]+\\.[a-z_]+$"},
+                "field": {"type": "string", "minLength": 1},
+                "message": {"type": "string", "minLength": 1}
+              }
+            }
+          }
+        },
+        "if": {"properties": {"valid": {"const": true}}},
+        "then": {"properties": {"problems": {"maxItems": 0}}},
+        "else": {"properties": {"problems": {"minItems": 1}}}
+      }
+    }
+  }
+}

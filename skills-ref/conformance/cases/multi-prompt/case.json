@@ -1,0 +1,12 @@
+{
+  "id": "multi-prompt",
+  "command": "to-prompt",
+  "args": [
+    "{skill}/skill-a",
+    "{skill}/skill-b"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "<available_skills>\n<skill>\n<name>\nskill-a\n</name>\n<description>\nFirst skill\n</description>\n<location>\n{skill}/skill-a/SKILL.md\n</location>\n</skill>\n<skill>\n<name>\nskill-b\n</name>\n<description>\nSecond skill\n</description>\n<location>\n{skill}/skill-b/SKILL.md\n</location>\n</skill>\n</available_skills>\n"
+  }
+}

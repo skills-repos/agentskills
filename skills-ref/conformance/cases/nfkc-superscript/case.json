@@ -1,0 +1,11 @@
+{
+  "id": "nfkc-superscript",
+  "command": "validate",
+  "args": [
+    "{skill}/2"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/2\n"
+  }
+}

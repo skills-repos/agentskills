@@ -1,0 +1,11 @@
+{
+  "id": "russian-lowercase",
+  "command": "validate",
+  "args": [
+    "{skill}/навык"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/навык\n"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "recursive",
+  "command": "validate",
+  "args": [
+    "--recursive",
+    "{skill}"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/my-skill\n"
+  }
+}

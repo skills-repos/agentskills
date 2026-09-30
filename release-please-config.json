@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/v17.6.0/schemas/config.json",
+  "packages": {
+    "skills-ref": {
+      "release-type": "go",
+      "component": "skills-ref",
+      "include-component-in-tag": true,
+      "tag-separator": "/",
+      "bump-minor-pre-major": true,
+      "draft": true,
+      "force-tag-creation": true
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "directory-mismatch",
+  "command": "validate",
+  "args": [
+    "{skill}/wrong"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/wrong:\n  - Directory name 'wrong' must match skill name 'right'\n"
+  }
+}

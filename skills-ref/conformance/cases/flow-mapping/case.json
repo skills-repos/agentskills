@@ -1,0 +1,11 @@
+{
+  "id": "flow-mapping",
+  "command": "validate",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/my-skill:\n  - Invalid YAML in frontmatter: flow style, tags, anchors, and aliases are not supported\n"
+  }
+}

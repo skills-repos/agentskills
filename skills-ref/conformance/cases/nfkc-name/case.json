@@ -1,0 +1,14 @@
+{
+  "id": "nfkc-name",
+  "command": "read-properties",
+  "args": [
+    "{skill}/café"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout_json": {
+      "name": "café",
+      "description": "A test skill"
+    }
+  }
+}

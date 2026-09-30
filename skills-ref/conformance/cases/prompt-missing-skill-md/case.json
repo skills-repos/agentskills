@@ -1,0 +1,11 @@
+{
+  "id": "prompt-missing-skill-md",
+  "command": "to-prompt",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Error: SKILL.md not found in {skill}/my-skill\n"
+  }
+}

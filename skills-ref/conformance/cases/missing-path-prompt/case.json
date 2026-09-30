@@ -1,0 +1,11 @@
+{
+  "id": "missing-path-prompt",
+  "command": "to-prompt",
+  "args": [
+    "{skill}/absent"
+  ],
+  "expect": {
+    "exit_code": 2,
+    "stderr": "Error: Path '{skill}/absent' does not exist.\nRun 'skills-ref to-prompt --help' for usage.\n"
+  }
+}

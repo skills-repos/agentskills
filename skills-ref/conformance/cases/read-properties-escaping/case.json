@@ -1,0 +1,11 @@
+{
+  "id": "read-properties-escaping",
+  "command": "read-properties",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "{\n  \"name\": \"my-skill\",\n  \"description\": \"café & <b> 😀\",\n  \"metadata\": {\n    \"owner\": \"é & <b>\"\n  }\n}\n"
+  }
+}

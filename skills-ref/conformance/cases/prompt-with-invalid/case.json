@@ -1,0 +1,12 @@
+{
+  "id": "prompt-with-invalid",
+  "command": "to-prompt",
+  "args": [
+    "{skill}/valid",
+    "{skill}/missing-name"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Error: Missing required field in frontmatter: name\n"
+  }
+}

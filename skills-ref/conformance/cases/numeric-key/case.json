@@ -1,0 +1,17 @@
+{
+  "id": "numeric-key",
+  "command": "read-properties",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout_json": {
+      "name": "my-skill",
+      "description": "A test skill",
+      "metadata": {
+        "42": "answer"
+      }
+    }
+  }
+}

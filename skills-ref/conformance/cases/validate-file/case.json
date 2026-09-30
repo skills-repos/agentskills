@@ -1,0 +1,11 @@
+{
+  "id": "validate-file",
+  "command": "validate",
+  "args": [
+    "{skill}/my-skill/SKILL.md"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/my-skill\n"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "prompt",
+  "command": "to-prompt",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "<available_skills>\n<skill>\n<name>\nmy-skill\n</name>\n<description>\nUse &lt;foo&gt; &amp; &lt;bar&gt;\n</description>\n<location>\n{skill}/my-skill/SKILL.md\n</location>\n</skill>\n</available_skills>\n"
+  }
+}

@@ -1,0 +1,127 @@
+name: skills-ref release
+
+on:
+  push:
+    branches:
+      - main
+  # Re-publishes an existing draft release with the workflow from the chosen
+  # ref. Re-running a failed job would reuse the workflow from the old commit.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag with a draft release, for example skills-ref/v1.0.0
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skills-ref-release
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      created: ${{ steps.release.outputs['skills-ref--release_created'] }}
+      tag: ${{ steps.release.outputs['skills-ref--tag_name'] }}
+      version: ${{ steps.release.outputs['skills-ref--version'] }}
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: release
+
+  # The release starts as a draft so the latest release never lacks assets.
+  publish:
+    needs: release-please
+    if: >-
+      !cancelled() && (github.event_name == 'workflow_dispatch' ||
+      needs.release-please.outputs.created == 'true')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ inputs.tag || needs.release-please.outputs.tag }}
+    steps:
+      - name: Read version from tag
+        run: |
+          case "$TAG" in
+            skills-ref/v[0-9]*) ;;
+            *) echo "Tag '$TAG' is not skills-ref/vX.Y.Z" >&2; exit 1 ;;
+          esac
+          echo "VERSION=${TAG#skills-ref/v}" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+          fetch-depth: 0
+      - uses: actions/setup-go@v6
+        with:
+          go-version: stable
+          cache-dependency-path: skills-ref/go.sum
+      - name: Test
+        working-directory: skills-ref
+        run: go test ./...
+      # GoReleaser OSS cannot parse prefixed tags. This tag stays local.
+      - name: Tag commit for GoReleaser
+        run: git tag "v$VERSION" HEAD
+      - uses: anchore/sbom-action/download-syft@v0
+      - name: Build archives
+        uses: goreleaser/goreleaser-action@v7
+        with:
+          distribution: goreleaser
+          version: v2.18.2
+          workdir: skills-ref
+          args: release --clean --skip=publish
+        env:
+          GORELEASER_CURRENT_TAG: v${{ env.VERSION }}
+      - name: Check built version
+        working-directory: skills-ref
+        run: |
+          got="$(dist/skills-ref_linux_amd64_v1/skills-ref --version)"
+          want="skills-ref, version $VERSION"
+          if [ "$got" != "$want" ]; then
+            echo "Built binary reports '$got', want '$want'" >&2
+            exit 1
+          fi
+      - name: Stage release assets
+        working-directory: skills-ref
+        run: |
+          cp example/skills-ref/SKILL.md dist/
+          cp install/install.sh install/install.ps1 dist/
+      # A release must not publish unless checksums.txt covers every
+      # installable asset and install.sh succeeds against the exact
+      # artifacts being uploaded.
+      - name: Check checksum coverage
+        working-directory: skills-ref/dist
+        run: |
+          missing=0
+          for f in *.tar.gz *.zip SKILL.md install.sh install.ps1; do
+            grep -q "  $f\$" checksums.txt \
+              || { echo "no checksum for $f in checksums.txt" >&2; missing=1; }
+          done
+          [ "$missing" -eq 0 ]
+          echo "checksums.txt covers every installable asset"
+      - name: Run installer against staged assets
+        working-directory: skills-ref/dist
+        run: |
+          python3 -m http.server 8000 >/dev/null 2>&1 &
+          server_pid=$!
+          trap 'kill $server_pid' EXIT
+          sleep 1
+          SKILLS_REF_BASE_URL=http://localhost:8000 \
+            BIN_DIR="$HOME/.local/bin" \
+            SKILL_DIR="$HOME/.agents/skills/skills-ref" \
+            sh ./install.sh
+      - name: Upload assets and publish
+        working-directory: skills-ref/dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$TAG" --clobber \
+            ./*.tar.gz ./*.zip ./*.sbom.json SKILL.md checksums.txt \
+            install.sh install.ps1
+          gh release edit "$TAG" --draft=false --latest

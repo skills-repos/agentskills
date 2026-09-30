@@ -1,0 +1,14 @@
+{
+  "id": "scalar-tilde",
+  "command": "read-properties",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout_json": {
+      "name": "~",
+      "description": "A test skill"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "read-file",
+  "command": "read-properties",
+  "args": [
+    "{skill}/my-skill/SKILL.md"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout_json": {
+      "name": "my-skill",
+      "description": "A test skill"
+    }
+  }
+}

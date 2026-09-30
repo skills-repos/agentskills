@@ -1,0 +1,11 @@
+{
+  "id": "russian-uppercase",
+  "command": "validate",
+  "args": [
+    "{skill}/НАВЫК"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/НАВЫК:\n  - Skill name 'НАВЫК' must be lowercase\n"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "chinese-name",
+  "command": "validate",
+  "args": [
+    "{skill}/技能"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/技能\n"
+  }
+}

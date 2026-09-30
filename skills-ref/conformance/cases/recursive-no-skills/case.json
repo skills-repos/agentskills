@@ -1,0 +1,12 @@
+{
+  "id": "recursive-no-skills",
+  "command": "validate",
+  "args": [
+    "--recursive",
+    "{skill}"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Error: no skills found under {skill}\n"
+  }
+}

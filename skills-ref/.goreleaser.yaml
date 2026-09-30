@@ -1,0 +1,55 @@
+version: 2
+project_name: skills-ref
+builds:
+  - id: skills-ref
+    main: ./cmd/skills-ref
+    binary: skills-ref
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+archives:
+  - formats:
+      - tar.gz
+    format_overrides:
+      - goos: windows
+        formats:
+          - zip
+    # No version in the name, so releases/latest/download/<name> URLs stay stable.
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    # Fixed modification times make archives reproducible.
+    builds_info:
+      mtime: "{{ .CommitDate }}"
+    files:
+      - src: README.md
+        info:
+          mtime: "{{ .CommitDate }}"
+      - src: LICENSE
+        info:
+          mtime: "{{ .CommitDate }}"
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+  # The installable skill and the installer scripts referenced by the
+  # installer prompt are released next to the binaries.
+  extra_files:
+    - glob: ./example/skills-ref/SKILL.md
+    - glob: ./install/install.sh
+    - glob: ./install/install.ps1
+sboms:
+  - artifacts: archive
+changelog:
+  disable: true
+# The workflow creates the draft release with gh after attesting artifacts.
+release:
+  disable: true

@@ -1,0 +1,63 @@
+name: skills-ref
+
+on:
+  push:
+    paths:
+      - .github/workflows/skills-ref.yml
+      - skills-ref/**
+  pull_request:
+    paths:
+      - .github/workflows/skills-ref.yml
+      - skills-ref/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Go ${{ matrix.go }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        go: ['1.26.x', stable]
+    defaults:
+      run:
+        shell: bash
+        working-directory: skills-ref
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go }}
+          cache-dependency-path: skills-ref/go.sum
+      - name: Check format
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then
+            echo "$unformatted"
+            exit 1
+          fi
+      - name: Vet
+        run: go vet ./...
+      - name: Staticcheck
+        run: go run honnef.co/go/tools/cmd/staticcheck@v0.8.1 ./...
+      - name: Test
+        run: go test -race ./...
+
+  install-scripts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shellcheck install.sh
+        run: shellcheck skills-ref/install/install.sh
+      - name: Parse install.ps1
+        run: |
+          pwsh -NoProfile -Command - <<'PS'
+          $tokens = $null
+          $errors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE/skills-ref/install/install.ps1", [ref]$tokens, [ref]$errors)
+          if ($errors) { $errors | ForEach-Object { Write-Host $_ }; exit 1 }
+          PS

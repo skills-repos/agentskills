@@ -1,0 +1,11 @@
+{
+  "id": "missing-frontmatter",
+  "command": "validate",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/my-skill:\n  - SKILL.md must start with YAML frontmatter (---)\n"
+  }
+}

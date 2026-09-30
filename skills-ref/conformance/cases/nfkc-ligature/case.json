@@ -1,0 +1,11 @@
+{
+  "id": "nfkc-ligature",
+  "command": "validate",
+  "args": [
+    "{skill}/fi"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/fi\n"
+  }
+}

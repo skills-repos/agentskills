@@ -1,0 +1,11 @@
+{
+  "id": "unicode-dotted-i",
+  "command": "validate",
+  "args": [
+    "{skill}/İ"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/İ:\n  - Skill name 'İ' must be lowercase\n"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "unicode-final-sigma",
+  "command": "validate",
+  "args": [
+    "{skill}/ς"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/ς\n"
+  }
+}

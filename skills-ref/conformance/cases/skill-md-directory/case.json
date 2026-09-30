@@ -1,0 +1,11 @@
+{
+  "id": "skill-md-directory",
+  "command": "validate",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/my-skill:\n  - Missing required file: SKILL.md\n"
+  }
+}

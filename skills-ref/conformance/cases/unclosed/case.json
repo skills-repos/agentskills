@@ -1,0 +1,11 @@
+{
+  "id": "unclosed",
+  "command": "validate",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Validation failed for {skill}/my-skill:\n  - SKILL.md frontmatter not properly closed with ---\n"
+  }
+}

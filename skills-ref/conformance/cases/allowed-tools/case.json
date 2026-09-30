@@ -1,0 +1,15 @@
+{
+  "id": "allowed-tools",
+  "command": "read-properties",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout_json": {
+      "name": "my-skill",
+      "description": "A test skill",
+      "allowed-tools": "Bash(jq:*) Read"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "invalid-metadata",
+  "command": "read-properties",
+  "args": [
+    "{skill}/my-skill"
+  ],
+  "expect": {
+    "exit_code": 1,
+    "stderr": "Error: Field 'metadata' must be a mapping of string keys to string values\n"
+  }
+}

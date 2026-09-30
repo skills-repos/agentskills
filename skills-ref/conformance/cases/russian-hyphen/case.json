@@ -1,0 +1,11 @@
+{
+  "id": "russian-hyphen",
+  "command": "validate",
+  "args": [
+    "{skill}/мой-навык"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "Valid skill: {skill}/мой-навык\n"
+  }
+}

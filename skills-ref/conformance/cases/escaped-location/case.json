@@ -1,0 +1,11 @@
+{
+  "id": "escaped-location",
+  "command": "to-prompt",
+  "args": [
+    "{skill}/a&b"
+  ],
+  "expect": {
+    "exit_code": 0,
+    "stdout": "<available_skills>\n<skill>\n<name>\na&amp;b\n</name>\n<description>\nA test skill\n</description>\n<location>\n{skill}/a&amp;b/SKILL.md\n</location>\n</skill>\n</available_skills>\n"
+  }
+}
