@@ -24,15 +24,37 @@ permissions:
   contents: read
 
 jobs:
+  # The canary installs from releases/latest, which 404s on a fresh
+  # repository. Skip the canary until the first release is published
+  # instead of failing red on every trigger.
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      has-release: ${{ steps.check.outputs.has-release }}
+    steps:
+      - name: Check whether a release exists
+        id: check
+        run: |
+          code="$(curl -s -o /dev/null -w '%{http_code}' --max-redirs 0 \
+            "https://github.com/${{ github.repository }}/releases/latest")"
+          if [ "$code" != "302" ]; then
+            echo "releases/latest returned HTTP $code; no release to install yet."
+            echo "has-release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has-release=true" >> "$GITHUB_OUTPUT"
+          fi
+
   install:
     name: ${{ matrix.os }}
+    needs: gate
     if: >-
-      (github.event_name == 'workflow_run' &&
+      needs.gate.outputs.has-release == 'true' &&
+      ((github.event_name == 'workflow_run' &&
        github.event.workflow_run.conclusion == 'success') ||
       github.event_name == 'schedule' ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'release' &&
-       startsWith(github.event.release.tag_name, 'skills-ref/v'))
+       startsWith(github.event.release.tag_name, 'skills-ref/v')))
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
