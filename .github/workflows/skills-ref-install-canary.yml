@@ -24,9 +24,11 @@ permissions:
   contents: read
 
 jobs:
-  # The canary installs from releases/latest, which 404s on a fresh
-  # repository. Skip the canary until the first release is published
-  # instead of failing red on every trigger.
+  # The canary installs from releases/latest, which on a fresh repository
+  # 302-redirects to the empty releases list. Skip the canary until the first
+  # release is published instead of failing red on every trigger. A real
+  # latest release redirects to /releases/tag/<tag>, so follow the redirect
+  # target, not the status code.
   gate:
     runs-on: ubuntu-latest
     outputs:
@@ -35,14 +37,17 @@ jobs:
       - name: Check whether a release exists
         id: check
         run: |
-          code="$(curl -s -o /dev/null -w '%{http_code}' --max-redirs 0 \
+          location="$(curl -s -o /dev/null -w '%{redirect_url}' --max-redirs 0 \
             "https://github.com/${{ github.repository }}/releases/latest")"
-          if [ "$code" != "302" ]; then
-            echo "releases/latest returned HTTP $code; no release to install yet."
-            echo "has-release=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "has-release=true" >> "$GITHUB_OUTPUT"
-          fi
+          case "$location" in
+            */releases/tag/*)
+              echo "has-release=true" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "releases/latest redirects to '$location'; no release to install yet."
+              echo "has-release=false" >> "$GITHUB_OUTPUT"
+              ;;
+          esac
 
   install:
     name: ${{ matrix.os }}
